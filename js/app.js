@@ -27,11 +27,14 @@ function initLenis() {
     if (window.ScrollTrigger) window.ScrollTrigger.update();
   });
 
-  function raf(time) {
-    lenis.raf(time);
+  // Use GSAP ticker when available — avoids a second RAF loop competing with GSAP
+  if (window.gsap) {
+    window.gsap.ticker.add((time) => lenis.raf(time * 1000));
+    window.gsap.ticker.lagSmoothing(0);
+  } else {
+    const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
   }
-  requestAnimationFrame(raf);
 }
 
 /* ---------- Nav ---------- */
@@ -65,7 +68,6 @@ function initNav() {
     a.addEventListener("click", () => setMenuOpen(false))
   );
 
-  // Cierra al pasar a desktop por rotación / resize
   mqDesktop.addEventListener?.("change", (e) => {
     if (e.matches) setMenuOpen(false);
   });
@@ -109,8 +111,6 @@ function initHeroVideo() {
     const p = video.play();
     if (p && typeof p.catch === "function") {
       p.catch(() => {
-        // autoplay bloqueado: el poster (Cloudinary jpg) queda visible.
-        // reintentamos en primera interacción.
         const resume = () => {
           video.play().catch(() => {});
           window.removeEventListener("touchstart", resume);
@@ -127,10 +127,8 @@ function initHeroVideo() {
 }
 
 /* ---------- Exploded view (canvas frames) ----------
-   Reemplaza el <video> por un canvas que pinta JPGs precargados,
-   ligado al progreso de scroll. Funciona idéntico desktop + móvil
-   (Safari iOS no necesita hacer seek de un video — solo decodifica
-   imágenes ya cacheadas).
+   Frames are lazy-loaded only when the user scrolls near the section,
+   keeping initial page load light.
 */
 const FRAME_COUNT = 96;
 const FRAME_PATH = (i) => `frames/frame_${String(i + 1).padStart(4, "0")}.jpg`;
@@ -145,7 +143,7 @@ function initExplodedView() {
   const pins = $$(".pin");
   if (!driver || !stage || !canvas) return;
 
-  // Pin reveal observer (independiente del scrub)
+  // Pin reveal observer
   const pinObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -169,7 +167,7 @@ function initExplodedView() {
   );
   pinObserver.observe(stage);
 
-  // Canvas setup con devicePixelRatio para nitidez
+  // Canvas — GPU compositing hint via translateZ applied in CSS
   const ctx = canvas.getContext("2d");
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const sizeCanvas = () => {
@@ -192,7 +190,6 @@ function initExplodedView() {
     if (frames[currentFrame]) drawFrame(currentFrame);
   }, { passive: true });
 
-  // Carga progresiva de frames
   const frames = new Array(FRAME_COUNT);
   let loaded = 0;
   let firstReady = false;
@@ -230,10 +227,10 @@ function initExplodedView() {
     img.src = FRAME_PATH(i);
   });
 
-  // Empieza con frame 0 (rápido), luego carga el resto en paralelo limitado
   const loadAll = async () => {
     await loadOne(0);
-    const concurrency = 6;
+    // Increased concurrency for faster sequential load after first frame
+    const concurrency = 10;
     let next = 1;
     const workers = Array.from({ length: concurrency }, async () => {
       while (next < FRAME_COUNT) {
@@ -244,11 +241,21 @@ function initExplodedView() {
     await Promise.all(workers);
     if (loaderEl) loaderEl.classList.add("is-done");
   };
-  loadAll();
+
+  // Lazy-load frames only when section is near — keeps initial page load fast
+  const loadObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        loadAll();
+        loadObserver.disconnect();
+      }
+    },
+    { rootMargin: "400px" }
+  );
+  loadObserver.observe(driver);
 
   if (typeof window.ScrollTrigger === "undefined") return;
 
-  // Smoothed scroll → frame index
   let target = 0;
   let current = 0;
   let raf = null;
@@ -279,7 +286,6 @@ function initExplodedView() {
     },
   });
 
-  // En iOS, la URL bar cambia el viewport — refrescar ScrollTrigger ayuda
   setTimeout(() => window.ScrollTrigger.refresh(), 600);
 }
 
@@ -330,19 +336,18 @@ function initSectionReveals() {
     });
   });
 
-  $$(".bento-cell").forEach((cell, i) => {
-    window.gsap.from(cell, {
-      opacity: 0,
-      y: 32,
-      duration: 0.8,
-      ease: "power3.out",
-      delay: (i % 2) * 0.08,
-      scrollTrigger: { trigger: cell, start: "top 85%" },
-    });
+  // Single batched trigger for all bento cells — replaces 8 individual triggers
+  window.gsap.from(".bento-cell", {
+    opacity: 0,
+    y: 32,
+    duration: 0.75,
+    ease: "power3.out",
+    stagger: 0.06,
+    scrollTrigger: { trigger: ".bento", start: "top 85%" },
   });
 }
 
-/* ---------- Bento mouse-track glow ---------- */
+/* ---------- Bento mouse-track glow + card navigation ---------- */
 function initBentoGlow() {
   $$(".bento-cell").forEach((cell) => {
     cell.addEventListener("mousemove", (e) => {
@@ -352,6 +357,12 @@ function initBentoGlow() {
       cell.style.setProperty("--mx", `${mx}%`);
       cell.style.setProperty("--my", `${my}%`);
     });
+
+    const href = cell.dataset.href;
+    if (href) {
+      cell.style.cursor = "pointer";
+      cell.addEventListener("click", () => { window.location.href = href; });
+    }
   });
 }
 
@@ -359,7 +370,6 @@ function initBentoGlow() {
 function initWaFab() {
   const fab = $("#waFab");
   if (!fab) return;
-  // Aparece después del hero (cuando el usuario empieza a leer).
   const onScroll = () => {
     fab.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.6);
   };

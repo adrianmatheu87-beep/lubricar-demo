@@ -1,0 +1,216 @@
+/* ============================================================
+   SERVICE PAGES · shared styles
+   ============================================================ */
+
+.svc-hero {
+  padding: calc(80px + clamp(56px, 12vh, 112px)) var(--shell) clamp(56px, 10vh, 88px);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,0,0,0.05), transparent 50%),
+    var(--obsidian);
+  position: relative;
+}
+
+.svc-hero-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.svc-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--whisper);
+  margin-bottom: 40px;
+  transition: color 0.2s var(--ease);
+}
+.svc-back:hover { color: var(--neon); }
+
+.svc-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--neon);
+  margin: 0 0 20px;
+}
+
+.svc-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(40px, 6.5vw, 88px);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  margin: 0 0 32px;
+  color: var(--bone);
+}
+
+.svc-lead {
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.65;
+  color: var(--mute);
+  max-width: 58ch;
+  margin: 0 0 44px;
+}
+
+/* ============================================================
+   DETAILS
+   ============================================================ */
+.svc-details {
+  padding: clamp(64px, 10vh, 96px) 0;
+  border-top: 1px solid var(--steel);
+  background: var(--carbon);
+}
+
+.svc-grid {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--shell);
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 56px;
+  align-items: start;
+}
+
+.svc-subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--whisper);
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--steel);
+}
+.svc-subtitle + .svc-subtitle { margin-top: 40px; }
+
+.svc-points {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 40px;
+}
+.svc-points li {
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.6;
+  color: var(--mute);
+  padding: 14px 0 14px 24px;
+  border-bottom: 1px solid var(--steel);
+  position: relative;
+}
+.svc-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 22px;
+  width: 10px;
+  height: 1px;
+  background: var(--neon);
+}
+
+.svc-text {
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.7;
+  color: var(--mute);
+  margin: 0;
+}
+
+/* ============================================================
+   STICKY CONTACT CARD
+   ============================================================ */
+.svc-card {
+  background: var(--obsidian);
+  border: 1px solid var(--steel);
+  padding: clamp(24px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 96px;
+}
+
+.svc-card-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin: 0;
+}
+
+.svc-card-name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.2;
+  color: var(--bone);
+  margin: 0;
+}
+
+/* ============================================================
+   RELATED SERVICES
+   ============================================================ */
+.svc-related {
+  padding: clamp(56px, 8vh, 80px) 0;
+  background: var(--obsidian);
+  border-top: 1px solid var(--steel);
+}
+
+.svc-related-head {
+  max-width: var(--max);
+  margin: 0 auto 28px;
+  padding: 0 var(--shell);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--whisper);
+}
+
+.svc-related-grid {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--shell);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.svc-related-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px;
+  background: var(--carbon);
+  border: 1px solid var(--steel);
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--mute);
+  transition: all 0.25s var(--ease);
+}
+.svc-related-item:hover {
+  border-color: var(--neon);
+  color: var(--bone);
+  transform: translateY(-2px);
+}
+.svc-related-item .r-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--neon);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  .svc-grid { grid-template-columns: 1fr; gap: 40px; }
+  .svc-card { position: static; }
+  .svc-related-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 540px) {
+  .svc-related-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .svc-related-item { padding: 14px; font-size: 12px; }
+}
