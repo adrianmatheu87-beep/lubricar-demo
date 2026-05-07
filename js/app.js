@@ -324,6 +324,9 @@ function initHeroReveal() {
 function initSectionReveals() {
   if (typeof window.gsap === "undefined" || typeof window.ScrollTrigger === "undefined") return;
   if (prefersReduced) return;
+  // Mobile: skip opacity-based reveals — ScrollTrigger misses fast momentum scrolling
+  // and leaves elements permanently invisible (black screen).
+  if (!mqDesktop.matches) return;
 
   $$(".section-head").forEach((head) => {
     window.gsap.from(head.children, {
