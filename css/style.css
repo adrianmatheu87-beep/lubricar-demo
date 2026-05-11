@@ -517,6 +517,10 @@ body.menu-open .nav {
   margin: 0 0 18px;
   color: var(--bone);
 }
+.cell-title a {
+  color: inherit;
+  text-decoration: none;
+}
 
 .cell-desc {
   font-size: 14px;

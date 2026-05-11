@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lubricar.gt/sitemap.xml
+Sitemap: https://lubricargt.com/sitemap.xml
