@@ -322,32 +322,42 @@ function initHeroReveal() {
 
 /* ---------- Section reveals ---------- */
 function initSectionReveals() {
-  if (typeof window.gsap === "undefined" || typeof window.ScrollTrigger === "undefined") return;
   if (prefersReduced) return;
-  // Mobile: skip opacity-based reveals — ScrollTrigger misses fast momentum scrolling
-  // and leaves elements permanently invisible (black screen).
   if (!mqDesktop.matches) return;
 
-  $$(".section-head").forEach((head) => {
-    window.gsap.from(head.children, {
-      opacity: 0,
-      y: 24,
-      duration: 0.9,
-      ease: "power3.out",
-      stagger: 0.1,
-      scrollTrigger: { trigger: head, start: "top 80%" },
+  if (typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined") {
+    $$(".section-head").forEach((head) => {
+      window.gsap.from(head.children, {
+        opacity: 0,
+        y: 24,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: 0.1,
+        scrollTrigger: { trigger: head, start: "top 80%", once: true },
+      });
     });
-  });
+  }
 
-  // Single batched trigger for all bento cells — replaces 8 individual triggers
-  window.gsap.from(".bento-cell", {
-    opacity: 0,
-    y: 32,
-    duration: 0.75,
-    ease: "power3.out",
-    stagger: 0.06,
-    scrollTrigger: { trigger: ".bento", start: "top 85%" },
+  // Bento cells use IntersectionObserver — immune to ScrollTrigger refresh races
+  // that left cells permanently stuck at opacity 0 (black screen).
+  const cells = $$(".bento-cell");
+  cells.forEach((c) => {
+    c.style.opacity = "0";
+    c.style.transform = "translateY(32px)";
+    c.style.willChange = "opacity, transform";
   });
+  const ease = "cubic-bezier(0.22, 0.61, 0.36, 1)";
+  const io = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    cells.forEach((c, i) => {
+      c.style.transition = `opacity 0.75s ${(i * 0.06).toFixed(2)}s ${ease}, transform 0.75s ${(i * 0.06).toFixed(2)}s ${ease}`;
+      c.style.opacity = "1";
+      c.style.transform = "none";
+    });
+    io.disconnect();
+  }, { threshold: 0.1 });
+  const bento = document.querySelector(".bento");
+  if (bento) io.observe(bento);
 }
 
 /* ---------- Bento mouse-track glow + card navigation ---------- */
