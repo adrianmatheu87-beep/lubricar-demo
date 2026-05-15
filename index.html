@@ -140,11 +140,6 @@
         <a href="#contacto" class="nav-cta">Diagnóstico</a>
       </nav>
 
-      <div class="nav-status is-offline" id="navStatus" role="status" aria-live="polite">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span class="status-label">[ SISTEMA OFFLINE ]</span>
-      </div>
-
       <button class="nav-burger" id="navBurger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileDrawer">
         <span></span><span></span><span></span>
       </button>
@@ -498,11 +493,6 @@
         <p class="loc-kicker">CONTACTO DIRECTO</p>
         <h3 class="loc-title">+502 4418 7246</h3>
 
-        <div class="loc-status is-offline" id="locStatus">
-          <span class="status-dot"></span>
-          <span class="status-label">[ SISTEMA OFFLINE ]</span>
-        </div>
-
         <table class="loc-hours">
           <tbody>
             <tr><td>Lun — Vie</td><td>09:00 — 17:00</td></tr>
@@ -510,6 +500,55 @@
             <tr><td>Domingo</td><td>Cerrado</td></tr>
           </tbody>
         </table>
+
+        <!-- Formulario de contacto -->
+        <div class="contact-divider" aria-hidden="true"></div>
+        <p class="loc-kicker" style="margin-top:0;">AGENDAR CITA</p>
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-field">
+            <label class="form-label" for="f-nombre">Nombre</label>
+            <input class="form-input" type="text" id="f-nombre" name="nombre" placeholder="Tu nombre" required autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="f-telefono">Teléfono</label>
+            <input class="form-input" type="tel" id="f-telefono" name="telefono" placeholder="+502 xxxx xxxx" required autocomplete="tel">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="f-servicio">Servicio que necesitas</label>
+            <select class="form-input form-select" id="f-servicio" name="servicio" required>
+              <option value="" disabled selected>Selecciona un servicio</option>
+              <option value="Cambio de aceite (motos y autos)">Cambio de aceite</option>
+              <option value="Revisión de frenos">Revisión de frenos</option>
+              <option value="Servicio de caja">Servicio de caja</option>
+              <option value="Diagnóstico con escáner OBD-II">Diagnóstico OBD-II</option>
+              <option value="Amortiguadores">Amortiguadores</option>
+              <option value="Tensores y fajas">Tensores y fajas</option>
+              <option value="Pinchazo / llantas">Pinchazo / llantas</option>
+              <option value="Polarizado y detailing">Polarizado y detailing</option>
+              <option value="Otro servicio">Otro servicio</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="f-hora">Hora preferida</label>
+            <select class="form-input form-select" id="f-hora" name="hora" required>
+              <option value="" disabled selected>Selecciona una hora</option>
+              <option value="9:00 AM">9:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="1:00 PM">1:00 PM</option>
+              <option value="2:00 PM">2:00 PM</option>
+              <option value="3:00 PM">3:00 PM</option>
+              <option value="4:00 PM">4:00 PM</option>
+              <option value="5:00 PM">5:00 PM</option>
+            </select>
+          </div>
+          <button class="cta cta-primary cta-block" type="submit">
+            <span class="cta-bracket">[</span>
+            <span class="cta-label">ENVIAR POR WHATSAPP</span>
+            <span class="cta-bracket">]</span>
+          </button>
+        </form>
 
         <a
           class="cta cta-primary cta-block"
@@ -574,7 +613,7 @@
 
   <!-- ========== FLOATING WHATSAPP ========== -->
   <a
-    class="wa-fab is-offline"
+    class="wa-fab"
     id="waFab"
     href="https://wa.me/50244187246?text=Hola%20Lubricar%2C%20quiero%20agendar%20un%20diagn%C3%B3stico%20para%20mi%20veh%C3%ADculo."
     target="_blank"
@@ -587,6 +626,19 @@
       <path d="M16.001 3C8.82 3 3 8.82 3 16c0 2.286.6 4.518 1.74 6.49L3 29l6.7-1.71A12.94 12.94 0 0 0 16 29C23.18 29 29 23.18 29 16S23.18 3 16.001 3zm0 23.4c-1.95 0-3.86-.52-5.53-1.5l-.4-.24-3.97 1.01 1.06-3.86-.26-.4A10.4 10.4 0 0 1 5.6 16c0-5.74 4.66-10.4 10.4-10.4S26.4 10.26 26.4 16 21.74 26.4 16 26.4zm5.7-7.78c-.31-.16-1.85-.91-2.14-1.02-.29-.1-.5-.16-.71.16-.21.31-.81 1.02-.99 1.23-.18.21-.37.24-.68.08-.31-.16-1.31-.48-2.49-1.54-.92-.82-1.54-1.83-1.72-2.14-.18-.31-.02-.48.14-.64.14-.14.31-.37.47-.55.16-.18.21-.31.31-.52.1-.21.05-.39-.03-.55-.08-.16-.71-1.71-.97-2.34-.26-.62-.52-.54-.71-.55l-.61-.01c-.21 0-.55.08-.83.39-.29.31-1.09 1.07-1.09 2.6 0 1.54 1.12 3.02 1.27 3.23.16.21 2.21 3.37 5.36 4.73.75.32 1.33.51 1.79.66.75.24 1.43.21 1.97.13.6-.09 1.85-.76 2.11-1.49.26-.73.26-1.36.18-1.49-.08-.13-.29-.21-.6-.37z"/>
     </svg>
   </a>
+
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nombre   = document.getElementById('f-nombre').value.trim();
+      const telefono = document.getElementById('f-telefono').value.trim();
+      const servicio = document.getElementById('f-servicio').value;
+      const hora     = document.getElementById('f-hora').value;
+      if (!nombre || !telefono || !servicio || !hora) return;
+      const msg = `Hola Lubricar! Quiero agendar un servicio.\n\nNombre: ${nombre}\nTeléfono: ${telefono}\nServicio: ${servicio}\nHora preferida: ${hora}`;
+      window.open('https://wa.me/50244187246?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    });
+  </script>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.45/dist/lenis.min.js" defer></script>
